@@ -1,0 +1,94 @@
+{
+  "name": "egypt-validators",
+  "version": "0.1.0",
+  "description": "Validate and normalize Egyptian data: mobile numbers, national IDs (الرقم القومي) and Arabic digits. Zero dependencies, TypeScript, optional Zod schemas.",
+  "keywords": [
+    "egypt",
+    "egyptian",
+    "validation",
+    "phone",
+    "mobile",
+    "national-id",
+    "arabic",
+    "arabic-digits",
+    "zod",
+    "typescript"
+  ],
+  "license": "MIT",
+  "author": "Bassam Mohamed Ali",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bassamradwan/egypt-validators.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bassamradwan/egypt-validators/issues"
+  },
+  "homepage": "https://github.com/bassamradwan/egypt-validators#readme",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.cts",
+  "typesVersions": {
+    "*": {
+      "zod": [
+        "./dist/zod.d.cts"
+      ]
+    }
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./zod": {
+      "import": {
+        "types": "./dist/zod.d.ts",
+        "default": "./dist/zod.js"
+      },
+      "require": {
+        "types": "./dist/zod.d.cts",
+        "default": "./dist/zod.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check:package": "publint && attw --pack .",
+    "smoke": "node scripts/smoke.mjs",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
+  },
+  "peerDependencies": {
+    "zod": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "zod": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
+    "@types/node": "^22.20.5",
+    "publint": "^0.3.25",
+    "tsup": "^9.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^5.1.0",
+    "zod": "^4.6.7"
+  }
+}
