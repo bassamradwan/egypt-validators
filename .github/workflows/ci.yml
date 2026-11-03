@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  # 1) Check the source: types, unit tests, build, and that the package is published correctly.
+  test:
+    name: Test and build (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm run check:package
+      - run: npm pack
+        if: matrix.node == 22
+      - uses: actions/upload-artifact@v4
+        if: matrix.node == 22
+        with:
+          name: package
+          path: egypt-validators-*.tgz
+
+  # 2) Install the packed package in an empty project, like a user would,
+  #    and run it on every Node version we support (older ones too).
+  smoke:
+    name: Installed package on Node ${{ matrix.node }}
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20, 22, 24]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: package
+      - name: Install in an empty project and run the smoke test
+        run: |
+          mkdir consumer && cd consumer
+          npm init -y > /dev/null
+          npm install ../egypt-validators-*.tgz zod@^4
+          cp ../scripts/smoke.mjs .
+          node smoke.mjs
